@@ -4,6 +4,13 @@
  */
 package hms1;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author 91984
@@ -177,6 +184,36 @@ public class wardenHome extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        try
+        {
+        hosetlsummaryWarden details = new hosetlsummaryWarden(null, true);
+            
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection mysqlConnection=DriverManager.getConnection("jdbc:mysql://localhost:3306/hms","devi","Devi@2004" );
+            
+            String selectQuery="select * from reservation";
+            PreparedStatement selectStatement=mysqlConnection.prepareStatement(selectQuery);
+
+                ResultSet result = selectStatement.executeQuery();
+                while(result.next())
+                {
+                    String username = result.getString("username");
+                    String student_id = result.getString("STUDENT_ID");
+                    String block = result.getString("BLOCK_NAME");
+                    String room = result.getString("ROOM_NO");
+                    
+                    String row[] = {username,student_id,block,room};
+                    DefaultTableModel tblModel = (DefaultTableModel)details.jTable1.getModel();
+                    tblModel.addRow(row);
+                }
+                details.setVisible(true);
+            mysqlConnection.close();
+            dispose();
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed

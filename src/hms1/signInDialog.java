@@ -174,7 +174,9 @@ public class signInDialog extends javax.swing.JDialog {
                     dispose();
                 } else if(typeOfUserFromDB.equals("STUDENT")) {
                     JOptionPane.showMessageDialog(null, "Login Successfull!");
-                    new studentHome().show();
+                    studentHome student = new studentHome();
+                    student.show();
+                    student.jLabel6.setText(usernameFromDB);
                     dispose();
                 }
             } 

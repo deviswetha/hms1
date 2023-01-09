@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import javax.swing.ComboBoxModel;
 import javax.swing.JOptionPane;
 
 /**
@@ -37,12 +38,12 @@ public class assignOrUnassignStudent extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel8 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
+        jComboBox2 = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
@@ -65,13 +66,6 @@ public class assignOrUnassignStudent extends javax.swing.JDialog {
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel3.setText("Assign Room");
 
-        jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
-
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel4.setText("Block Name     :");
 
@@ -83,11 +77,22 @@ public class assignOrUnassignStudent extends javax.swing.JDialog {
         });
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "<Select Block>", "Mercury", "Venus", "Jupiter", "Neptune", "Narmada" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel8.setText("STUDENT ID    :");
 
         jTextField2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -109,12 +114,15 @@ public class assignOrUnassignStudent extends javax.swing.JDialog {
                             .addComponent(jLabel4)
                             .addComponent(jLabel1))
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField1)
-                            .addComponent(jComboBox1, 0, 143, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)
-                        .addGap(86, 86, 86))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 115, Short.MAX_VALUE)
+                                .addComponent(jButton1)
+                                .addGap(86, 86, 86))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,14 +142,11 @@ public class assignOrUnassignStudent extends javax.swing.JDialog {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(33, 33, 33)
                         .addComponent(jButton1)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(13, 13, 13)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel1)))
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1)
+                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 51, 102));
@@ -252,34 +257,73 @@ public class assignOrUnassignStudent extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         try
         {
             Class.forName("com.mysql.jdbc.Driver");
             Connection mysqlConnection=DriverManager.getConnection("jdbc:mysql://localhost:3306/hms","devi","Devi@2004" );
-            String insertQuery="insert into room values (?,?,?)";
+            String insertQuery="insert into reservation values (?,?,?,?);";
+            String selectQuery="select STUDENT_ID, username from student where STUDENT_ID = ?";
+            String updateQuery="Update room set CAPACITY = ? where BLOCK_NAME = ? and ROOM_NO = ?;";
+            String capacityQuery="Select CAPACITY from room where BLOCK_NAME = ? and ROOM_NO = ?;";
             PreparedStatement statement=mysqlConnection.prepareStatement(insertQuery);
+            PreparedStatement selectStatement=mysqlConnection.prepareStatement(selectQuery);
+            PreparedStatement selectCapacityStatement=mysqlConnection.prepareStatement(capacityQuery);
+            PreparedStatement updateStatement=mysqlConnection.prepareStatement(updateQuery);
             String blockName = jComboBox1.getSelectedItem().toString();
             if(blockName.equals("<Select Block>")) {
-                throw new Error("Select a block to add room");
+                throw new Error("Select a block to assign room");
             }
-            statement.setString(1, blockName);
-            statement.setString(2, jTextField1.getText());
-            statement.setString(3, jTextField2.getText());
+            String room = jComboBox2.getSelectedItem().toString();
+            if(room.trim().isEmpty()) {
+                throw new Error("Select a block with rooms");
+            }
+            statement.setString(2, blockName);
+            statement.setString(1, jTextField2.getText());
+            statement.setString(3, room);
+            selectStatement.setString(1, jTextField2.getText());
+            selectCapacityStatement.setString(1, blockName);
+            selectCapacityStatement.setString(2, room);
+            updateStatement.setString(2, blockName);
+            updateStatement.setString(3, room);
+            
 
-            if(!jTextField1.getText().trim().isEmpty()&&!jTextField2.getText().trim().isEmpty())
+            if(!jTextField2.getText().trim().isEmpty())
             {
-                statement.executeUpdate();
-                JOptionPane.showMessageDialog(null, "Room added successfully");
+                ResultSet result = selectStatement.executeQuery();
+                ResultSet capacityResult = selectCapacityStatement.executeQuery();
+                if(result.next())
+                {
+                    if(!result.getString("STUDENT_ID").trim().isEmpty() && !result.getString("username").trim().isEmpty())
+                    {
+                        
+                        statement.setString(4, result.getString("username"));
+                        statement.executeUpdate();
+                        int capacity=0;
+                        if(capacityResult.next()) {
+                            capacity  = Integer.parseInt(capacityResult.getString("CAPACITY"));
+                            capacity--;
+                        }
+                        
+                        JOptionPane.showMessageDialog(null, capacity);
+                        updateStatement.setString(1, Integer.toString(capacity));
+                        updateStatement.executeUpdate();
+                        JOptionPane.showMessageDialog(null, "Room assigned successfully");
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(null, "Cannot assign a room, No Student");
+                    }
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(null, "Cannot assign a room, No Student");
+                }
             }
             else
             {
-                JOptionPane.showMessageDialog(null, "Cannot add a room");
+                JOptionPane.showMessageDialog(null, "Cannot assign a room");
             }
             mysqlConnection.close();
             dispose();
@@ -296,56 +340,48 @@ public class assignOrUnassignStudent extends javax.swing.JDialog {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox2ActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
         try
         {
             Class.forName("com.mysql.jdbc.Driver");
             Connection mysqlConnection=DriverManager.getConnection("jdbc:mysql://localhost:3306/hms","devi","Devi@2004" );
-            String selectQuery="select capacity from room WHERE BLOCK_NAME = ? and ROOM_NO = ?;";
-            String deleteQuery="DELETE from room WHERE BLOCK_NAME = ? and ROOM_NO = ?;";
-            PreparedStatement deleteStatement=mysqlConnection.prepareStatement(deleteQuery);
+            String selectQuery="select ROOM_NO from room WHERE BLOCK_NAME = ? and CAPACITY > 0;";
             PreparedStatement selectStatement=mysqlConnection.prepareStatement(selectQuery);
-            String blockName = jComboBox3.getSelectedItem().toString();
+            String blockName = jComboBox1.getSelectedItem().toString();
             if(blockName.equals("<Select Block>")) {
-                throw new Exception("Select a block to add room");
+                throw new Exception("Select a block to assign room");
             }
-            deleteStatement.setString(1, blockName);
-            deleteStatement.setString(2, jTextField5.getText());
             selectStatement.setString(1, blockName);
-            selectStatement.setString(2, jTextField5.getText());
-
-            if(!jTextField5.getText().trim().isEmpty())
+            if(!jTextField2.getText().trim().isEmpty())
             {
                 ResultSet result = selectStatement.executeQuery();
-                if(result.next())
+                while(result.next())
                 {
-                    if(!result.getString("capacity").trim().isEmpty())
+                    if(!result.getString("ROOM_NO").trim().isEmpty())
                     {
-                        deleteStatement.executeUpdate();
-                        JOptionPane.showMessageDialog(null, "Room deleted successfully");
-                    }
-                    else
-                    {
-                        JOptionPane.showMessageDialog(null, "Cannot delete the room");
+                        jComboBox2.addItem(result.getString("ROOM_NO"));
                     }
                 }
-                else
-                {
-                    JOptionPane.showMessageDialog(null, "Cannot delete the room");
-                }
-
             }
             else
             {
                 JOptionPane.showMessageDialog(null, "Cannot delete the room");
             }
             mysqlConnection.close();
-            dispose();
         }
         catch(Exception e)
         {
             JOptionPane.showMessageDialog(null, e);
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+        
+    }//GEN-LAST:event_jComboBox1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -393,6 +429,7 @@ public class assignOrUnassignStudent extends javax.swing.JDialog {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -405,7 +442,6 @@ public class assignOrUnassignStudent extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField5;
